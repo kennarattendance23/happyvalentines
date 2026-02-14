@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Love ❤️</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+    background: #ece5dd;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* LOCK SCREEN */
+.lock-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('https://i.pinimg.com/1200x/d1/a0/30/d1a030be624c501209bee17b3fc67c54.jpg') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 100;
+    text-align: center;
+}
+
+.lock-screen::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    z-index: 1;
+}
+
+.lock-content, .clock {
+    position: relative;
+    z-index: 2;
+}
+
+/* CLOCK */
+.clock {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.time {
+    font-size: 60px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.date {
+    font-size: 18px;
+    opacity: 0.85;
+    margin-top: 5px;
+}
+
+/* LOCK CONTENT */
+.lock-content {
+    margin-top: auto;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.lock-content h2 {
+    font-weight: 400;
+    font-size: 20px;
+}
+
+/* PASSCODE DOTS */
+#passcodeDisplay {
+    display: flex;
+    justify-content: space-between;
+    width: 180px;
+    margin-bottom: 10px;
+}
+
+.dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.5);
+    background: transparent;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.dot.filled {
+    background: white;
+    transform: scale(1.2);
+}
+
+/* NUMERIC KEYPAD */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.keypad button {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.keypad button:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+/* POP ANIMATION */
+.keypad button:active {
+    transform: scale(1.2);
+}
+
+/* DELETE & ENTER BUTTON */
+.delete-btn {
+    font-size: 22px;
+}
+
+/* PHONE UI */
+.phone {
+    width: 100%;
+    max-width: 400px;
+    height: 95vh;
+    background: #fff;
+    border-radius: 25px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.header {
+    background: #075e54;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.chat {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 15px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.sent {
+    align-self: flex-end;
+    background: #dcf8c6;
+}
+
+.typing {
+    font-style: italic;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.buttons {
+    padding: 10px;
+    display: none;
+    gap: 10px;
+    background: #f0f0f0;
+}
+
+button.choice {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#yesBtn {
+    background: #25d366;
+    color: white;
+}
+
+#noBtn {
+    background: #ff4d4d;
+    color: white;
+    position: relative;
+}
+
+.heart {
+    position: absolute;
+    font-size: 18px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); opacity:1; }
+    100% { transform: translateY(-10vh); opacity:0; }
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(5px); }
+    to { opacity:1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lockScreen">
+
+    <!-- CLOCK -->
+    <div class="clock">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
+    </div>
+
+    <!-- LOCK INPUT -->
+    <div class="lock-content">
+        <h2>Enter Passcode</h2>
+
+        <!-- PASSCODE DOTS -->
+        <div id="passcodeDisplay">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <!-- NUMERIC KEYPAD -->
+        <div class="keypad">
+            <button onclick="pressKey(1)">1</button>
+            <button onclick="pressKey(2)">2</button>
+            <button onclick="pressKey(3)">3</button>
+            <button onclick="pressKey(4)">4</button>
+            <button onclick="pressKey(5)">5</button>
+            <button onclick="pressKey(6)">6</button>
+            <button onclick="pressKey(7)">7</button>
+            <button onclick="pressKey(8)">8</button>
+            <button onclick="pressKey(9)">9</button>
+            <button onclick="clearPasscode()" class="delete-btn">⌫</button>
+            <button onclick="pressKey(0)">0</button>
+            <button onclick="unlock()" class="delete-btn">✔️</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- PHONE UI -->
+<div class="phone" id="phoneUI">
+
+    <div class="header">
+        <img src="image.jpg" alt="Profile">
+        <div>My Man💕</div>
+    </div>
+
+    <div class="chat" id="chatBox"></div>
+
+    <div class="buttons" id="choiceButtons">
+        <button class="choice" id="yesBtn">YES 💖</button>
+        <button class="choice" id="noBtn">No 😢</button>
+    </div>
+
+</div>
+
+<audio id="bgMusic" src="Ruth B. - Dandelions (Lyrics).mp3" loop></audio>
+
+<script>
+const correctCode = "1234";
+let enteredCode = "";
+
+/* CLOCK FUNCTION */
+function updateClock() {
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const date = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+    document.getElementById("time").textContent = time;
+    document.getElementById("date").textContent = date;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* KEYPAD LOGIC */
+function pressKey(num){
+    if(enteredCode.length < 4){
+        enteredCode += num;
+        updateDisplay();
+        animateButton(num);
+    }
+}
+
+function clearPasscode(){
+    enteredCode = enteredCode.slice(0, -1);
+    updateDisplay();
+}
+
+function updateDisplay(){
+    const dots = document.querySelectorAll("#passcodeDisplay .dot");
+    dots.forEach((dot, i) => {
+        if(i < enteredCode.length){
+            dot.classList.add("filled");
+        } else {
+            dot.classList.remove("filled");
+        }
+    });
+}
+
+/* BUTTON ANIMATION */
+function animateButton(num){
+    const btns = document.querySelectorAll(".keypad button");
+    btns.forEach(btn => {
+        if(btn.textContent == num){
+            btn.style.transform = "scale(1.2)";
+            setTimeout(() => btn.style.transform = "scale(1)", 100);
+        }
+    });
+}
+
+/* UNLOCK */
+function unlock() {
+    if(enteredCode === correctCode){
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("phoneUI").style.display = "flex";
+        document.getElementById("bgMusic").play();
+        startChat();
+    } else {
+        alert("Wrong code baby 😜");
+        enteredCode = "";
+        updateDisplay();
+    }
+}
+
+/* CHAT LOGIC */
+const chatBox = document.getElementById("chatBox");
+const messages = [
+    "Hi baby ❤️",
+    "I have something important to tell you...",
+    "Every day with you feels magical.",
+    "You make my world brighter.",
+    "So here's my question...",
+    "Will you be my Valentine? 💘"
+];
+let index = 0;
+
+function startChat() {
+    showTyping();
+}
+
+function showTyping() {
+    const typing = document.createElement("div");
+    typing.classList.add("typing");
+    typing.innerText = "typing...";
+    chatBox.appendChild(typing);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    setTimeout(() => {
+        typing.remove();
+        showMessage();
+    }, 1500);
+}
+
+function showMessage() {
+    if(index < messages.length) {
+        const msg = document.createElement("div");
+        msg.classList.add("message", "sent");
+        msg.innerText = messages[index];
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        index++;
+        setTimeout(showTyping, 1000);
+    } else {
+        document.getElementById("choiceButtons").style.display = "flex";
+    }
+}
+
+/* YES BUTTON */
+document.getElementById("yesBtn").addEventListener("click", function(){
+    document.getElementById("choiceButtons").style.display = "none";
+    sendLoveMessage();
+});
+
+function sendLoveMessage() {
+    const loveText = "YAAAY BABY 💕 You just made me the happiest girlfriend alive. I love you more than words can explain. Thank you for always have time for me even when you're busy. Thank you for listening to my chika I hope you'll still listen more to my upcoming chikas hahaha. I wanna spend time with you personally like I can feel and touch you baby. I love you always my baby hubby eventhough I sometimes fight with you hahaha it's just me wanting some lambing hehehe. Anyways I love you so so much baby I really do I swear hahaha 💍❤️";
+
+    const msg = document.createElement("div");
+    msg.classList.add("message", "sent");
+    msg.innerText = loveText;
+    chatBox.appendChild(msg);
+    launchHearts();
+}
+
+/* NO BUTTON */
+document.getElementById("noBtn").addEventListener("mouseover", moveButton);
+document.getElementById("noBtn").addEventListener("click", moveButton);
+
+function moveButton() {
+    const btn = document.getElementById("noBtn");
+    btn.style.position = "absolute";
+    btn.style.top = Math.random() * 70 + "%";
+    btn.style.left = Math.random() * 70 + "%";
+}
+
+/* HEARTS */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 6000);
+}
+
+function launchHearts(){
+    setInterval(createHeart, 300);
+}
+</script>
+
+</body>
+</html>
