@@ -176,10 +176,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    word-wrap: break-word; /* wrap long messages */
 }
 
 .message {
-    max-width: 75%;
+    max-width: 80%;
     padding: 10px 14px;
     border-radius: 15px;
     font-size: 14px;
@@ -382,6 +383,10 @@ const messages = [
 ];
 let index = 0;
 
+function scrollChatToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 function startChat() {
     showTyping();
 }
@@ -391,7 +396,7 @@ function showTyping() {
     typing.classList.add("typing");
     typing.innerText = "typing...";
     chatBox.appendChild(typing);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    scrollChatToBottom();
 
     setTimeout(() => {
         typing.remove();
@@ -405,7 +410,7 @@ function showMessage() {
         msg.classList.add("message", "sent");
         msg.innerText = messages[index];
         chatBox.appendChild(msg);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        scrollChatToBottom();
         index++;
         setTimeout(showTyping, 1000);
     } else {
@@ -426,6 +431,7 @@ function sendLoveMessage() {
     msg.classList.add("message", "sent");
     msg.innerText = loveText;
     chatBox.appendChild(msg);
+    scrollChatToBottom();
     launchHearts();
 }
 
