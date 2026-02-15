@@ -148,7 +148,6 @@ body {
     overflow: hidden;
 }
 
-/* Desktop phone look */
 @media (min-width: 500px) {
     .phone {
         border-radius: 25px;
@@ -210,6 +209,8 @@ body {
     display: none;
     gap: 10px;
     background: #f0f0f0;
+    position: relative;
+    min-height: 70px;
 }
 
 button.choice {
@@ -229,7 +230,8 @@ button.choice {
 #noBtn {
     background: #ff4d4d;
     color: white;
-    position: relative;
+    position: absolute;
+    transition: 0.15s ease;
 }
 
 /* HEARTS */
@@ -310,6 +312,16 @@ button.choice {
 const correctCode = "1234";
 let enteredCode = "";
 
+const lockScreen = document.getElementById("lockScreen");
+const phoneUI = document.getElementById("phoneUI");
+const bgMusic = document.getElementById("bgMusic");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const choiceButtons = document.getElementById("choiceButtons");
+const chatBox = document.getElementById("chatBox");
+
+/* LOCKSCREEN FUNCTIONS */
+
 function updateClock() {
     const now = new Date();
     document.getElementById("time").textContent =
@@ -355,7 +367,6 @@ function unlock() {
 
 /* CHAT */
 
-const chatBox = document.getElementById("chatBox");
 const messages = [
     "Hi baby ❤️",
     "I have something important to tell you...",
@@ -402,24 +413,39 @@ function showMessage(){
     }
 }
 
+/* YES BUTTON */
+
 yesBtn.onclick = function(){
     choiceButtons.style.display = "none";
     const msg = document.createElement("div");
     msg.classList.add("message","sent");
-    msg.innerText = "YAAAY BABY 💕 You just made me the happiest girlfriend alive. I love you more than words can explain. Thank you for always have time for me even when you're busy. Thank you for listening to my chika I hope you'll still listen more to my upcoming chikas hahaha. I wanna spend time with you personally like I can feel and touch you baby. I love you always my baby hubby eventhough I sometimes fight with you hahaha it's just me wanting some lambing hehehe. Anyways I love you so so much baby I really do I swear hahaha 💍❤️ 💍❤️";
+    msg.innerText = "YAAAY BABY 💕 You just made me the happiest girlfriend alive...";
     chatBox.appendChild(msg);
     scrollBottom();
     launchHearts();
 };
 
-noBtn.onmouseover = moveButton;
-noBtn.onclick = moveButton;
+/* MOBILE SAFE ESCAPING NO BUTTON */
+
+noBtn.addEventListener("mouseenter", moveButton);
+noBtn.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    moveButton();
+});
 
 function moveButton(){
-    noBtn.style.position = "absolute";
-    noBtn.style.top = Math.random()*70 + "%";
-    noBtn.style.left = Math.random()*70 + "%";
+    const container = document.getElementById("choiceButtons");
+    const maxX = container.clientWidth - noBtn.offsetWidth - 10;
+    const maxY = container.clientHeight - noBtn.offsetHeight - 10;
+
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
 }
+
+/* HEARTS */
 
 function createHeart(){
     const heart = document.createElement("div");
