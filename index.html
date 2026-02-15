@@ -420,47 +420,43 @@ function showMessage(){
 
 /* YES BUTTON */
 
-yesBtn.onclick = function(){
+yesBtn.addEventListener("click", function(e){
+    e.stopPropagation();
     choiceButtons.style.display = "none";
     const msg = document.createElement("div");
     msg.classList.add("message","sent");
-    msg.innerText = "YAAY BABY 💕 You just made me the happiest girlfriend alive. I love you more than words can explain. Thank you for always have time for me even when you're busy. Thank you for listening to my chika I hope you'll still listen more to my upcoming chikas hahaha. I wanna spend time with you personally like I can feel and touch you baby. I love you always my baby hubby eventhough I sometimes fight with you hahaha it's just me wanting some lambing hehehe. Anyways I love you so so much baby I really do I swear hahaha 💍❤️"
+    msg.innerText = "YAAAY BABY 💕 You just made me the happiest girlfriend alive. I love you more than words can explain. Thank you for always have time for me even when you're busy. Thank you for listening to my chika I hope you'll still listen more to my upcoming chikas hahaha. I wanna spend time with you personally like I can feel and touch you baby. I love you always my baby hubby eventhough I sometimes fight with you hahaha it's just me wanting some lambing hehehe. Anyways I love you so so much baby I really do I swear hahaha 💍❤️"
     chatBox.appendChild(msg);
     scrollBottom();
     launchHearts();
-};
+});
 
 /* NO BUTTON RUNAWAY AFTER FIRST CLICK */
 
 let noEscaped = false;
 
-function moveButton(){
+function moveButton(e){
+    if(e) e.stopPropagation(); // prevent triggering YES
     if(!noEscaped){
         noBtn.style.position = "absolute";
         noEscaped = true;
     }
-
-    const container = document.getElementById("choiceButtons");
+    const container = choiceButtons;
     const maxX = container.clientWidth - noBtn.offsetWidth - 10;
     const maxY = container.clientHeight - noBtn.offsetHeight - 10;
-
     const randomX = Math.random() * maxX;
     const randomY = Math.random() * maxY;
-
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
 }
 
-// Desktop: hover triggers move
+// Desktop hover
 noBtn.addEventListener("mouseenter", moveButton);
-
-// Mobile: tap triggers move only on actual click
-noBtn.addEventListener("click", function(e){
+// Mobile touch
+noBtn.addEventListener("touchstart", function(e){
     e.preventDefault();
-    moveButton();
+    moveButton(e);
 });
-
-/* HEARTS */
 
 function createHeart(){
     const heart = document.createElement("div");
