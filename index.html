@@ -206,11 +206,12 @@ body {
 
 .buttons {
     padding: 12px;
-    display: none;
     gap: 10px;
     background: #f0f0f0;
-    position: relative; /* container relative */
+    position: relative;
     min-height: 70px;
+    display: none; /* hidden initially */
+    flex-direction: row;
 }
 
 button.choice {
@@ -232,7 +233,7 @@ button.choice {
 #noBtn {
     background: #ff4d4d;
     color: white;
-    position: relative; /* start side by side */
+    position: relative;
 }
 
 /* HEARTS */
@@ -310,7 +311,7 @@ button.choice {
 <audio id="bgMusic" src="Ruth B. - Dandelions (Lyrics).mp3" loop></audio>
 
 <script>
-const correctCode = "1234";
+const correctCode = "0517";
 let enteredCode = "";
 
 const lockScreen = document.getElementById("lockScreen");
@@ -409,8 +410,11 @@ function showMessage(){
         scrollBottom();
         index++;
         setTimeout(showTyping, 1000);
-    } else {
-        choiceButtons.style.display = "flex";
+
+        // Show buttons only after the last message
+        if(index === messages.length){
+            choiceButtons.style.display = "flex";
+        }
     }
 }
 
@@ -420,7 +424,7 @@ yesBtn.onclick = function(){
     choiceButtons.style.display = "none";
     const msg = document.createElement("div");
     msg.classList.add("message","sent");
-    msg.innerText = "YAAAY BABY 💕 You just made me the happiest girlfriend alive...";
+    msg.innerText = "YAAY BABY 💕 You just made me the happiest girlfriend alive. I love you more than words can explain. Thank you for always have time for me even when you're busy. Thank you for listening to my chika I hope you'll still listen more to my upcoming chikas hahaha. I wanna spend time with you personally like I can feel and touch you baby. I love you always my baby hubby eventhough I sometimes fight with you hahaha it's just me wanting some lambing hehehe. Anyways I love you so so much baby I really do I swear hahaha 💍❤️"
     chatBox.appendChild(msg);
     scrollBottom();
     launchHearts();
@@ -428,11 +432,10 @@ yesBtn.onclick = function(){
 
 /* NO BUTTON RUNAWAY AFTER FIRST CLICK */
 
-let noEscaped = false; // NO has started escaping?
+let noEscaped = false;
 
 function moveButton(){
     if(!noEscaped){
-        // first click: make it absolute
         noBtn.style.position = "absolute";
         noEscaped = true;
     }
@@ -448,8 +451,11 @@ function moveButton(){
     noBtn.style.top = randomY + "px";
 }
 
-noBtn.addEventListener("click", moveButton);
-noBtn.addEventListener("touchstart", function(e){
+// Desktop: hover triggers move
+noBtn.addEventListener("mouseenter", moveButton);
+
+// Mobile: tap triggers move only on actual click
+noBtn.addEventListener("click", function(e){
     e.preventDefault();
     moveButton();
 });
