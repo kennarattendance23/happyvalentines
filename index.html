@@ -209,7 +209,7 @@ body {
     display: none;
     gap: 10px;
     background: #f0f0f0;
-    position: relative;
+    position: relative; /* container relative */
     min-height: 70px;
 }
 
@@ -220,18 +220,19 @@ button.choice {
     border-radius: 20px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.15s ease;
 }
 
 #yesBtn {
     background: #25d366;
     color: white;
+    position: relative;
 }
 
 #noBtn {
     background: #ff4d4d;
     color: white;
-    position: absolute;
-    transition: 0.15s ease;
+    position: relative; /* start side by side */
 }
 
 /* HEARTS */
@@ -425,15 +426,17 @@ yesBtn.onclick = function(){
     launchHearts();
 };
 
-/* MOBILE SAFE ESCAPING NO BUTTON */
+/* NO BUTTON RUNAWAY AFTER FIRST CLICK */
 
-noBtn.addEventListener("mouseenter", moveButton);
-noBtn.addEventListener("touchstart", function(e){
-    e.preventDefault();
-    moveButton();
-});
+let noEscaped = false; // NO has started escaping?
 
 function moveButton(){
+    if(!noEscaped){
+        // first click: make it absolute
+        noBtn.style.position = "absolute";
+        noEscaped = true;
+    }
+
     const container = document.getElementById("choiceButtons");
     const maxX = container.clientWidth - noBtn.offsetWidth - 10;
     const maxY = container.clientHeight - noBtn.offsetHeight - 10;
@@ -444,6 +447,12 @@ function moveButton(){
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
 }
+
+noBtn.addEventListener("click", moveButton);
+noBtn.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    moveButton();
+});
 
 /* HEARTS */
 
